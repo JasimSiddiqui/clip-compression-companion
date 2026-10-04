@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Rust / Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# FFmpeg is downloaded by `npm run ffmpeg`, not committed
+src-tauri/binaries/
+
+# Staged release uploads
+release-assets/
+
+# Local tooling
+.claude/
+
+# Environment & secrets
+.env
+.env.*
+*.token
+*.secret
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / tooling
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*

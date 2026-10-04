@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Clip Compression Companion",
+  "version": "1.0.0",
+  "identifier": "ca.branditsolutions.clipcompressioncompanion",
+  "build": {
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Clip Compression Companion",
+        "width": 1100,
+        "height": 740,
+        "minWidth": 780,
+        "minHeight": 540,
+        "resizable": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "category": "Video",
+    "shortDescription": "Shrink videos, audio, images, and any other file.",
+    "longDescription": "Clip Compression Companion compresses videos to a target size or quality, re-encodes audio, shrinks images, and zips everything else, all on your own computer with FFmpeg.",
+    "externalBin": ["binaries/ffmpeg"],
+    "resources": {
+      "FFMPEG-NOTICE.txt": "FFMPEG-NOTICE.txt"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

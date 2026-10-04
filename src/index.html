@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clip Compression Companion</title>
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand__mark" src="assets/logo.svg" width="34" height="34" alt="" />
+        <div class="brand__text">
+          <h1>Clip Compression Companion</h1>
+          <p id="summary" class="brand__summary">Drop in a clip to get started</p>
+        </div>
+      </div>
+
+      <div class="topbar__actions">
+        <button id="theme-toggle" class="icon-btn" type="button" title="Toggle theme" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+          </svg>
+        </button>
+
+        <button id="add-files" class="btn" type="button" title="Add files (Ctrl+O)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          <span>Add files</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="notice" class="notice" hidden></div>
+
+    <main class="content">
+      <!-- Queue -------------------------------------------------------- -->
+      <section class="panel queue" aria-label="Files">
+        <div class="panel__head">
+          <span class="section-title">Queue</span>
+          <span id="queue-count" class="panel__count"></span>
+          <div class="panel__head-actions">
+            <button id="clear-finished" class="link-btn" type="button" hidden>Clear finished</button>
+            <button id="cancel-all" class="link-btn link-btn--danger" type="button" hidden>Cancel all</button>
+          </div>
+        </div>
+
+        <ul id="jobs" class="jobs" hidden></ul>
+
+        <div id="dropzone" class="dropzone">
+          <div class="dropzone__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <path d="M17 8l-5-5-5 5" />
+              <path d="M12 3v12" />
+            </svg>
+          </div>
+          <p class="dropzone__title">Drop videos, audio, images, or any file</p>
+          <p class="dropzone__sub">
+            Pick a size or a quality and get a smaller copy next to the original.
+            Other files and whole folders are packed into a .zip. Nothing is uploaded.
+          </p>
+          <button id="browse" class="btn btn--primary" type="button">Browse files</button>
+        </div>
+      </section>
+
+      <!-- Options ------------------------------------------------------ -->
+      <aside class="panel options" aria-label="Options">
+        <div class="panel__head panel__head--tabs">
+          <div class="seg seg--full" role="tablist" aria-label="Options for">
+            <button class="seg__btn" data-tab="video" type="button" role="tab">Video<span class="seg__count" data-count="video"></span></button>
+            <button class="seg__btn" data-tab="audio" type="button" role="tab">Audio<span class="seg__count" data-count="audio"></span></button>
+            <button class="seg__btn" data-tab="image" type="button" role="tab">Images<span class="seg__count" data-count="image"></span></button>
+            <button class="seg__btn" data-tab="other" type="button" role="tab">Files<span class="seg__count" data-count="other"></span></button>
+          </div>
+        </div>
+
+        <div class="options__body">
+          <!-- Video -->
+          <div class="pane" data-pane="video">
+            <div class="field">
+              <span class="field__label">Aim for</span>
+              <div class="seg seg--full" data-setting="video.mode">
+                <button class="seg__btn" data-value="size" type="button">A file size</button>
+                <button class="seg__btn" data-value="quality" type="button">A quality</button>
+              </div>
+            </div>
+
+            <div class="field" data-show="video.mode=size">
+              <span class="field__label">Target size</span>
+              <div class="chips" data-setting="video.targetMb" data-type="number">
+                <button class="chip" data-value="10" type="button">10 MB</button>
+                <button class="chip" data-value="25" type="button">25 MB</button>
+                <button class="chip" data-value="50" type="button">50 MB</button>
+                <button class="chip" data-value="100" type="button">100 MB</button>
+              </div>
+              <div class="input-unit">
+                <input type="number" min="1" max="100000" step="1" data-setting="video.targetMb" data-type="number" aria-label="Target size in megabytes" />
+                <span>MB</span>
+              </div>
+              <p id="target-hint" class="hint"></p>
+            </div>
+
+            <div class="field" data-show="video.mode=quality">
+              <span class="field__label">Quality <span id="quality-label" class="field__value"></span></span>
+              <input type="range" min="1" max="5" step="1" data-setting="video.quality" data-type="number" aria-label="Quality" />
+              <div class="range-ends"><span>Smaller file</span><span>Better quality</span></div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="video-codec">Format</label>
+              <select id="video-codec" data-setting="video.codec">
+                <option value="h264">MP4 · H.264 (plays everywhere)</option>
+                <option value="hevc">MP4 · H.265 (smaller, newer devices)</option>
+                <option value="av1">MP4 · AV1 (smallest, slowest)</option>
+              </select>
+              <p id="codec-hint" class="hint"></p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field__label" for="video-resolution">Resolution</label>
+                <select id="video-resolution" data-setting="video.resolution">
+                  <option value="auto">Auto</option>
+                  <option value="original">Original</option>
+                  <option value="2160">4K</option>
+                  <option value="1440">1440p</option>
+                  <option value="1080">1080p</option>
+                  <option value="720">720p</option>
+                  <option value="480">480p</option>
+                  <option value="360">360p</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="video-fps">Frame rate</label>
+                <select id="video-fps" data-setting="video.fps">
+                  <option value="original">Original</option>
+                  <option value="60">60 fps</option>
+                  <option value="30">30 fps</option>
+                  <option value="24">24 fps</option>
+                </select>
+              </div>
+            </div>
+            <p id="resolution-hint" class="hint hint--tight"></p>
+
+            <div class="field">
+              <label class="field__label" for="video-audio">Sound</label>
+              <select id="video-audio" data-setting="video.audio">
+                <option value="192">High (192 kbps)</option>
+                <option value="128">Standard (128 kbps)</option>
+                <option value="96">Lower (96 kbps)</option>
+                <option value="64">Low (64 kbps)</option>
+                <option value="none">Remove sound</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <span class="field__label">Encoding</span>
+              <div class="seg seg--full" data-setting="video.speed">
+                <button class="seg__btn" data-value="fast" type="button">Faster</button>
+                <button class="seg__btn" data-value="balanced" type="button">Balanced</button>
+                <button class="seg__btn" data-value="small" type="button">Smaller</button>
+              </div>
+            </div>
+
+            <label class="toggle">
+              <input type="checkbox" data-setting="video.gpu" />
+              <span class="toggle__track" aria-hidden="true"></span>
+              <span class="toggle__text">
+                <span>Use the graphics card</span>
+                <span id="gpu-hint" class="hint">Checking for a hardware encoder…</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Audio -->
+          <div class="pane" data-pane="audio" hidden>
+            <div class="field">
+              <label class="field__label" for="audio-format">Format</label>
+              <select id="audio-format" data-setting="audio.format">
+                <option value="mp3">MP3 (plays everywhere)</option>
+                <option value="m4a">AAC · .m4a (good for Apple devices)</option>
+                <option value="opus">Opus · .opus (smallest for the quality)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="audio-bitrate">Bitrate</label>
+              <select id="audio-bitrate" data-setting="audio.bitrate" data-type="number">
+                <option value="256">256 kbps (very high)</option>
+                <option value="192">192 kbps (high)</option>
+                <option value="160">160 kbps</option>
+                <option value="128">128 kbps (standard)</option>
+                <option value="96">96 kbps</option>
+                <option value="64">64 kbps (voice)</option>
+                <option value="48">48 kbps</option>
+                <option value="32">32 kbps (smallest)</option>
+              </select>
+              <p class="hint">About <span id="audio-per-minute"></span> per minute of sound.</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" data-setting="audio.mono" />
+              <span class="toggle__track" aria-hidden="true"></span>
+              <span class="toggle__text">
+                <span>Mix down to mono</span>
+                <span class="hint">Good for lectures, podcasts, and voice notes.</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Images -->
+          <div class="pane" data-pane="image" hidden>
+            <div class="field">
+              <label class="field__label" for="image-format">Format</label>
+              <select id="image-format" data-setting="image.format">
+                <option value="keep">Keep the same format</option>
+                <option value="jpg">JPEG (photos, plays everywhere)</option>
+                <option value="webp">WebP (smaller, for the web)</option>
+                <option value="png">PNG (lossless, keeps transparency)</option>
+              </select>
+            </div>
+            <div class="field" data-show="image.format!=png">
+              <span class="field__label">Quality <span id="image-quality-label" class="field__value"></span></span>
+              <input type="range" min="30" max="95" step="5" data-setting="image.quality" data-type="number" aria-label="Image quality" />
+              <div class="range-ends"><span>Smaller file</span><span>Better quality</span></div>
+              <p class="hint" data-show="image.format=keep">Used for JPEG and WebP images.</p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="image-size">Largest side</label>
+              <select id="image-size" data-setting="image.maxSize" data-type="number">
+                <option value="0">Original size</option>
+                <option value="3840">3840 px (4K)</option>
+                <option value="2560">2560 px</option>
+                <option value="1920">1920 px (Full HD)</option>
+                <option value="1280">1280 px</option>
+                <option value="1024">1024 px</option>
+                <option value="800">800 px</option>
+              </select>
+            </div>
+            <label class="toggle" data-show="image.format=keep|png">
+              <input type="checkbox" data-setting="image.reduceColors" />
+              <span class="toggle__track" aria-hidden="true"></span>
+              <span class="toggle__text">
+                <span>Reduce PNGs to 256 colours</span>
+                <span class="hint">Much smaller. Best for screenshots, icons, and graphics.</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Everything else -->
+          <div class="pane" data-pane="other" hidden>
+            <p class="pane__intro">
+              Documents, folders, and anything that isn't video, audio, or an image
+              is packed into a standard <strong>.zip</strong> that opens on any computer.
+            </p>
+            <div class="field">
+              <span class="field__label">Compression</span>
+              <div class="seg seg--full" data-setting="other.level">
+                <button class="seg__btn" data-value="fast" type="button">Fast</button>
+                <button class="seg__btn" data-value="normal" type="button">Normal</button>
+                <button class="seg__btn" data-value="max" type="button">Maximum</button>
+              </div>
+              <p class="hint">
+                Files that are already compressed (PDFs, .docx, other zips) won't
+                shrink much and are left alone.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="options__foot">
+          <div class="field">
+            <span class="field__label">Save to</span>
+            <div class="output-row">
+              <span id="output-label" class="output-row__path">Next to the original</span>
+              <button id="reset-dir" class="icon-btn icon-btn--sm" type="button" title="Save next to the original" aria-label="Save next to the original" hidden>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+              <button id="choose-dir" class="btn btn--sm" type="button">Change…</button>
+            </div>
+          </div>
+          <div class="field field--inline">
+            <label class="field__label" for="suffix">Add to name</label>
+            <input id="suffix" type="text" maxlength="40" spellcheck="false" data-setting="output.suffix" />
+          </div>
+          <button id="compress" class="btn btn--primary btn--block" type="button" disabled title="Compress (Ctrl+Enter)">Compress</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="appfoot">
+      <span class="appfoot__text">© 2026 Jasim Siddiqui · GPL-3.0 · no warranty · uses FFmpeg</span>
+      <button id="source-link" class="appfoot__link" type="button">Source on GitHub</button>
+    </footer>
+
+    <div id="drop-overlay" class="drop-overlay" hidden>
+      <div class="drop-overlay__card">Drop to add</div>
+    </div>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
