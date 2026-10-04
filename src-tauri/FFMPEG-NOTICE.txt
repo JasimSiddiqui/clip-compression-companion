@@ -1,0 +1,13 @@
+Clip Compression Companion includes FFmpeg (ffmpeg.exe).
+
+FFmpeg is a trademark of Fabrice Bellard, originator of the FFmpeg project.
+Copyright (c) the FFmpeg developers. https://ffmpeg.org
+
+The bundled binary is the "essentials" release build from https://www.gyan.dev/ffmpeg/builds/
+It is licensed under the GNU General Public License version 3. The complete
+source code for FFmpeg is available at https://ffmpeg.org/download.html and
+https://github.com/FFmpeg/FFmpeg, and the build configuration for this binary
+is printed by running: ffmpeg -version
+
+Clip Compression Companion runs FFmpeg as a separate program. It is itself
+released under the GNU General Public License version 3; see LICENSE.
