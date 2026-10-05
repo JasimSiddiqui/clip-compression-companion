@@ -47,7 +47,10 @@ limit.
 
 ## Install (Windows 10/11)
 
+**Download page: [clipcompression.vercel.app](https://clipcompression.vercel.app/)**
+
 No terminal, no FFmpeg install. Just download and run. Grab a build from the
+download page above or straight from the
 [**Releases**](https://github.com/JasimSiddiqui/clip-compression-companion/releases/latest) page:
 
 | | What it does |
